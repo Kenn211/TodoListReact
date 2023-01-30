@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TodoList from "./components/TodoList";
 import TextField from "@atlaskit/textfield";
 import Button from "@atlaskit/button";
@@ -21,14 +21,18 @@ function App() {
   }, []);
   //Sử dụng useCallBack biến onTextInputChange và onAddBtnClick sẽ không bị khởi tạo lại sau mỗi lần add
 
-  const onAddBtnClick = useCallback(() => {
-    //thêm text input vào danh sách todoList
-    setTodoList([
-      { id: v4(), name: textInput, isCompleted: false },
-      ...todoList,
-    ]);
-    setTextInput("");
-  }, [textInput]);
+  const onAddBtnClick = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      //thêm text input vào danh sách todoList
+      setTodoList([
+        { id: v4(), name: textInput, isCompleted: false },
+        ...todoList,
+      ]);
+      setTextInput("");
+    },
+    [textInput]
+  );
   //Thêm biến textInput vào Array thứ 1 sẽ khởi tạo lại textInput có sự thay đổi giá trị
 
   const onCheckBtnClick = useCallback((id: string) => {
@@ -40,30 +44,38 @@ function App() {
   }, []);
 
   const onDeleteBtnClick = useCallback((id: String) => {
-    setTodoList((item: TodoItem[]) => item.filter((todo: TodoItem) =>{
-      return todo.id != id;
-    } ))
+    setTodoList((item: TodoItem[]) =>
+      item.filter((todo: TodoItem) => {
+        return todo.id != id;
+      })
+    );
   }, []);
 
   return (
     <>
       <h3>Danh sách cần làm</h3>
-      <TextField
-        value={textInput}
-        onChange={onTextInputChange}
-        name="add-todo"
-        placeholder="Thêm việc cần làm..."
-        elemAfterInput={
-          <Button
-            isDisabled={!textInput}
-            appearance={"primary"}
-            onClick={onAddBtnClick}
-          >
-            Thêm
-          </Button>
-        }
-      ></TextField>
-      <TodoList todoList={todoList} onCheckBtnClick={onCheckBtnClick} onDeleteBtnClick={onDeleteBtnClick}></TodoList>
+      <form onSubmit={onAddBtnClick}>
+        <TextField
+          value={textInput}
+          onChange={onTextInputChange}
+          name="add-todo"
+          placeholder="Thêm việc cần làm..."
+          elemAfterInput={
+            <Button
+              isDisabled={!textInput}
+              appearance={"primary"}
+              type={"submit"}
+            >
+              Thêm
+            </Button>
+          }
+        ></TextField>
+      </form>
+      <TodoList
+        todoList={todoList}
+        onCheckBtnClick={onCheckBtnClick}
+        onDeleteBtnClick={onDeleteBtnClick}
+      ></TodoList>
     </>
   );
 }

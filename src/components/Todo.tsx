@@ -29,12 +29,13 @@ const ButtonStyle = styled(Button)`
 `;
 
 export default function Todo(props: {
-  todo: TodoItem,
-  onCheckBtnClick: Function,
-  onDeleteBtnClick: Function
+  todo: TodoItem;
+  onCheckBtnClick: Function;
+  onDeleteBtnClick: Function;
 }) {
   return (
     <ButtonStyle
+      onClick={() => props.onCheckBtnClick(props.todo.id)}
       style={{
         textDecoration: props.todo.isCompleted ? "line-through" : "none",
       }}
@@ -43,6 +44,9 @@ export default function Todo(props: {
         <div>
           <span
             className="check-icon"
+            style={{
+              display: props.todo.isCompleted ? "inline-block" : "none"
+            }}
             onClick={() => props.onCheckBtnClick(props.todo.id)}
           >
             <CheckIcon primaryColor="#4fff4f" label={""} />
